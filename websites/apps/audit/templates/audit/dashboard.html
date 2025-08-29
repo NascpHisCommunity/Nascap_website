@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Audit Dashboard</h1>
+  <p>Total Visitors (by unique IPs): {{ total_visitors }}</p>
+  <h2>Page Views</h2>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Path</th>
+        <th>Views</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in page_views %}
+        <tr>
+          <td>{{ item.path }}</td>
+          <td>{{ item.count }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

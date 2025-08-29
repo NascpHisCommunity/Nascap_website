@@ -1,0 +1,9 @@
+Django>=4.0
+django-storages
+django-crispy-forms
+django-filter
+django-tables2
+Pillow
+# Add other packages as needed, e.g., for caching:
+redis
+djangorestframework
