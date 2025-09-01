@@ -28,15 +28,15 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG                           # 🔒
 SECURE_HSTS_PRELOAD          = not DEBUG                             # 🔒
 SECURE_CONTENT_TYPE_NOSNIFF  = True
 SECURE_BROWSER_XSS_FILTER    = True
-X_FRAME_OPTIONS              = "DENY"
+X_FRAME_OPTIONS              = "SAMEORIGIN"
 
 # ---------------------------------------------------------------------
 # Content-Security Policy – relaxed for Summernote in dev
 # ---------------------------------------------------------------------
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_STYLE_SRC   = ("'self'", "'unsafe-inline'", "https://fonts.googleapis.com")
-CSP_SCRIPT_SRC  = ("'self'", "'unsafe-inline'", "https://ajax.googleapis.com")
-CSP_FONT_SRC    = ("'self'", "https://fonts.gstatic.com")
+CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")
+CSP_STYLE_SRC  = ("'self'", "'unsafe-inline'", "https://fonts.googleapis.com")
+CSP_IMG_SRC    = ("'self'", "data:", "blob:")
+CSP_FRAME_ANCESTORS = ("'self'",)
 
 # ---------------------------------------------------------------------
 # Authentication
@@ -73,14 +73,31 @@ INSTALLED_APPS = [
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
-# Summernote tweaks (optional)
+'''# Summernote tweaks (optional)
 SUMMERNOTE_CONFIG = {
     "summernote": {
         "width": "100%",
         "height": 400,
         # "toolbar": [ ... ]          # customise if desired
     },
+}'''
+
+# settings.py
+# Summernote uses our local assets (no CDN)
+SUMMERNOTE_CONFIG = {
+    "iframe": True,
+    "base_css": (
+        "/static/js/vendors/bootstrap.min.css",
+        "/static/js/vendors/summernote-0.9.0-dist/summernote.min.css",
+    ),
+    "base_js": (
+        "/static/js/vendors/jquery-3.6.0.min.js",
+        "/static/js/vendors/bootstrap.bundle.min.js",
+        "/static/js/vendors/summernote-0.9.0-dist/summernote.min.js",
+    ),
+    "summernote": {"width": "100%", "height": "400px"},
 }
+
 
 # ---------------------------------------------------------------------
 # Middleware
@@ -122,9 +139,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME":     "nascp_web",
         "USER":     "postgres",
-        "PASSWORD": "mubarak",
+        "PASSWORD": "vvvvv",
         "HOST":     "localhost",
-        "PORT":     "5432",
+        "PORT":     "1111",
     }
 }
 

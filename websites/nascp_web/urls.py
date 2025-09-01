@@ -13,10 +13,12 @@ def spa_view(request):
 urlpatterns = [
     # Core prefixes
     path("admin/",   admin.site.urls),
+    path("summernote/", include("django_summernote.urls")),  # ← REQUIRED
+    path("", include("apps.content_creator.urls", namespace="content_creator")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("api/",     include("apps.api.urls")),
     path("audit/",   include("apps.audit.urls")),
-    path("summernote/", include("django_summernote.urls")),
+    # path("summernote/", include("django_summernote.urls")),
     # Catch-all for the SPA — keep this LAST
     re_path(r"^.*$", spa_view, name="spa"),
 ]

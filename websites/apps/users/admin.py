@@ -7,7 +7,7 @@ from django.contrib import admin
 
 admin.site.site_header = "NASCP Administrator"
 admin.site.site_title = "NASCP Administrator"
-admin.site.index_title = "Programme Data Console"
+admin.site.index_title = "Home"
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):

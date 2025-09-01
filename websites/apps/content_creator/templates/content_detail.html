@@ -1,0 +1,5 @@
+{# templates/content_creator/content_detail.html #}
+<h1>{{ content.title }}</h1>
+<div class="prose">
+  {{ content.body|safe }}   {# allow stored HTML to render #}
+</div>
