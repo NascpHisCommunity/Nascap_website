@@ -3,6 +3,11 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext_lazy as _
 from .models import CustomUser
 from .forms import CustomUserCreationForm, CustomUserChangeForm
+from django.contrib import admin
+
+admin.site.site_header = "NASCP Administrator"
+admin.site.site_title = "NASCP Administrator"
+admin.site.index_title = "Programme Data Console"
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
