@@ -120,9 +120,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "nascp_web",
         "USER": "postgres",
-        "PASSWORD": "vvvvvvvv",
+        "PASSWORD": "mubarak",
         "HOST": "localhost",
-        "PORT": "1111",
+        "PORT": "5432",
     }
 }
 
@@ -139,6 +139,7 @@ REST_FRAMEWORK = {
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]     # source assets (dev)
 STATIC_ROOT = BASE_DIR / "staticfiles"       # collectstatic target
+# BASE_DIR / "static" / "templates"
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
