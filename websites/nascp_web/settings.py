@@ -1,41 +1,45 @@
 """
 nascp_web/settings.py
-Cleaned for Django 5.1.6 + django-summernote
+Django 5.1.6 • CKEditor configured (uploads enabled)
 """
 
 from pathlib import Path
 import os
 
-# ---- critical routing vars ----
-ROOT_URLCONF = "nascp_web.urls"           # ← ensure this matches your project name
-WSGI_APPLICATION = "nascp_web.wsgi.application"
 # ---------------------------------------------------------------------
 # Core paths
 # ---------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ---------------------------------------------------------------------
+# Routing (project module names)
+# ---------------------------------------------------------------------
+ROOT_URLCONF = "nascp_web.urls"
+WSGI_APPLICATION = "nascp_web.wsgi.application"
+
+# ---------------------------------------------------------------------
 # Security & debug
 # ---------------------------------------------------------------------
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-key")          # 🔒 override in prod
-DEBUG      = os.getenv("DJANGO_DEBUG", "1") == "1"
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]                           # 🔒 add your domain in prod
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "dev-only-key")   # 🔒 override in prod
+DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]                    # 🔒 add your domain in prod
 
 # HTTPS / HSTS (enable only when DEBUG == False)
-SECURE_SSL_REDIRECT          = not DEBUG                             # 🔒
-SECURE_HSTS_SECONDS          = 31_536_000 if not DEBUG else 0        # 🔒 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG                           # 🔒
-SECURE_HSTS_PRELOAD          = not DEBUG                             # 🔒
-SECURE_CONTENT_TYPE_NOSNIFF  = True
-SECURE_BROWSER_XSS_FILTER    = True
-X_FRAME_OPTIONS              = "SAMEORIGIN"
+SECURE_SSL_REDIRECT = not DEBUG
+SECURE_HSTS_SECONDS = 31_536_000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+# X_FRAME_OPTIONS = "SAMEORIGIN"  # CKEditor doesn't require iframes; default is OK
 
 # ---------------------------------------------------------------------
-# Content-Security Policy – relaxed for Summernote in dev
+# Content Security Policy (CSP) – friendly defaults for CKEditor
 # ---------------------------------------------------------------------
+# Using django-csp middleware only (no 'csp' in INSTALLED_APPS required)
 CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'")
-CSP_STYLE_SRC  = ("'self'", "'unsafe-inline'", "https://fonts.googleapis.com")
-CSP_IMG_SRC    = ("'self'", "data:", "blob:")
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https://fonts.googleapis.com")
+CSP_IMG_SRC = ("'self'", "data:", "blob:")
 CSP_FRAME_ANCESTORS = ("'self'",)
 
 # ---------------------------------------------------------------------
@@ -57,11 +61,12 @@ INSTALLED_APPS = [
 
     # Third-party
     "crispy_forms",
+    "crispy_bootstrap5",                      # ▶ CKEDITOR: ensure crispy uses bootstrap5 correctly
     "django_filters",
     "django_tables2",
     "rest_framework",
-    "django_summernote",             # keep above custom apps for template precedence
-    "csp",
+    "ckeditor",                               # ▶ CKEDITOR: add
+    "ckeditor_uploader",                      # ▶ CKEDITOR: add (enables uploads)
 
     # Local apps
     "apps.users",
@@ -71,33 +76,9 @@ INSTALLED_APPS = [
     "apps.audit.apps.AuditConfig",
 ]
 
+# Crispy Forms (Bootstrap 5)
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  # ▶ CKEDITOR: added
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-
-'''# Summernote tweaks (optional)
-SUMMERNOTE_CONFIG = {
-    "summernote": {
-        "width": "100%",
-        "height": 400,
-        # "toolbar": [ ... ]          # customise if desired
-    },
-}'''
-
-# settings.py
-# Summernote uses our local assets (no CDN)
-SUMMERNOTE_CONFIG = {
-    "iframe": True,
-    "base_css": (
-        "/static/js/vendors/bootstrap.min.css",
-        "/static/js/vendors/summernote-0.9.0-dist/summernote.min.css",
-    ),
-    "base_js": (
-        "/static/js/vendors/jquery-3.6.0.min.js",
-        "/static/js/vendors/bootstrap.bundle.min.js",
-        "/static/js/vendors/summernote-0.9.0-dist/summernote.min.js",
-    ),
-    "summernote": {"width": "100%", "height": "400px"},
-}
-
 
 # ---------------------------------------------------------------------
 # Middleware
@@ -111,7 +92,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "apps.audit.middleware.AuditMiddleware",
-    "csp.middleware.CSPMiddleware",
+    "csp.middleware.CSPMiddleware",          # uses CSP_* settings above
 ]
 
 # ---------------------------------------------------------------------
@@ -132,16 +113,16 @@ TEMPLATES = [{
 }]
 
 # ---------------------------------------------------------------------
-# Database
+# Database (dev example)
 # ---------------------------------------------------------------------
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME":     "nascp_web",
-        "USER":     "postgres",
-        "PASSWORD": "vvvvv",
-        "HOST":     "localhost",
-        "PORT":     "1111",
+        "NAME": "nascp_web",
+        "USER": "postgres",
+        "PASSWORD": "mubarak",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
 
@@ -156,19 +137,37 @@ REST_FRAMEWORK = {
 # Static & media files
 # ---------------------------------------------------------------------
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]      # project-level assets (dev)
-STATIC_ROOT     = BASE_DIR / "staticfiles"    # `collectstatic` target
+STATICFILES_DIRS = [BASE_DIR / "static"]     # source assets (dev)
+STATIC_ROOT = BASE_DIR / "staticfiles"       # collectstatic target
 
-MEDIA_URL  = "/media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+# ---------------------------------------------------------------------
+# CKEditor configuration
+# ---------------------------------------------------------------------
+CKEDITOR_UPLOAD_PATH = "uploads/"            # ▶ CKEDITOR: adds /media/uploads/...
+CKEDITOR_IMAGE_BACKEND = "pillow"            # ▶ CKEDITOR
+
+CKEDITOR_CONFIGS = {                         # ▶ CKEDITOR: toolbar/features
+    "default": {
+        "toolbar": "full",                   # or 'basic'
+        "height": 400,
+        "width": "100%",
+        "extraPlugins": ",".join([
+            "uploadimage", "image2", "autolink", "embed", "codesnippet", "justify"
+        ]),
+        "removePlugins": "stylesheetparser",
+    }
+}
 
 # ---------------------------------------------------------------------
 # Internationalisation
 # ---------------------------------------------------------------------
 LANGUAGE_CODE = "en-us"
-TIME_ZONE     = "UTC"
-USE_I18N      = True
-USE_TZ        = True
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
 
 # ---------------------------------------------------------------------
 # Misc

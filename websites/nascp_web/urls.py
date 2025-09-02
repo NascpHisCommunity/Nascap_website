@@ -13,7 +13,8 @@ def spa_view(request):
 urlpatterns = [
     # Core prefixes
     path("admin/",   admin.site.urls),
-    path("summernote/", include("django_summernote.urls")),  # ← REQUIRED
+    # path("summernote/", include("django_summernote.urls")),  # ← REQUIRED
+    path("ckeditor/", include("ckeditor_uploader.urls")),  # if using uploader
     path("", include("apps.content_creator.urls", namespace="content_creator")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("api/",     include("apps.api.urls")),

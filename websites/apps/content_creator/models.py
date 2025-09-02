@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
+from ckeditor_uploader.fields import RichTextUploadingField
+
 
 class Category(models.Model):
     """
@@ -50,8 +52,8 @@ class Content(models.Model):
         blank=True,
         related_name="contents",
     )
-    # Plain TextField; Summernote provides the rich editor at the form/admin layer
-    body = models.TextField()
+    # CKEditor rich text with upload support
+    body = RichTextUploadingField(blank=True)  # stores HTML
     published = models.BooleanField(default=False)
     published_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

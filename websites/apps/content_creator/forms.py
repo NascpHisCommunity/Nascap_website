@@ -1,5 +1,4 @@
 from django import forms
-from django_summernote.widgets import SummernoteWidget
 from .models import Content, Category
 
 class ContentForm(forms.ModelForm):
@@ -7,19 +6,14 @@ class ContentForm(forms.ModelForm):
         model = Content
         fields = "__all__"
         widgets = {
-            "body": SummernoteWidget(),                      # ← swapped editor
-            "published_at": forms.DateTimeInput(
-                attrs={"type": "datetime-local"}
-            ),
+            # CKEditor widget is auto-applied by the model field; we only style other fields here
+            "published_at": forms.DateTimeInput(attrs={"type": "datetime-local"}),
         }
 
 class CategoryForm(forms.ModelForm):
-    """
-    Form for creating and updating content categories.
-    """
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = "__all__"
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 4, 'placeholder': 'Optional category description'}),
+            "description": forms.Textarea(attrs={"rows": 4, "placeholder": "Optional category description"}),
         }
