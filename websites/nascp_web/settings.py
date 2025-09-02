@@ -120,9 +120,9 @@ DATABASES = {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "nascp_web",
         "USER": "postgres",
-        "PASSWORD": "vvvvvvv",
+        "PASSWORD": "mubarak",
         "HOST": "localhost",
-        "PORT": "1111",
+        "PORT": "5432",
     }
 }
 
